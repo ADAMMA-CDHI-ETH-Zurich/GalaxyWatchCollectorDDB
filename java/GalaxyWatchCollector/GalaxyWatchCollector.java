@@ -18,6 +18,7 @@ package GalaxyWatchCollector;/*
 
 import static android.content.Context.POWER_SERVICE;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +38,8 @@ import com.example.galaxywatchddbguard.GalaxyWatchHeartRateSample;
 import java.util.ArrayList;
 import java.util.List;
 
+import AndroidPermissions.GenericPermission;
+import AndroidPermissions.LocationPermission;
 import JavaCLAID.CLAID;
 import JavaCLAID.Channel;
 import JavaCLAID.Module;
@@ -58,6 +61,12 @@ public class GalaxyWatchCollector extends Module {
     Channel<HeartRateSample> heartRateSampleChannel;
 
     GalaxyWatchDDBGuard galaxyWatchDDBGuard = new GalaxyWatchDDBGuard();
+
+    public void reflect(Reflector r)
+    {
+        r.reflect("enableAccelerometer", this.enableAccelerometer);
+        r.reflect("enableHeartRate", this.enableHeartRate);
+    }
 
     public void initialize()
     {
