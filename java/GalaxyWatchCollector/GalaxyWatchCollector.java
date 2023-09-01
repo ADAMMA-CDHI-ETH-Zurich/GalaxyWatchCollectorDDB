@@ -60,18 +60,23 @@ public class GalaxyWatchCollector extends Module {
     Channel<AccelerometerSample> accelerometerSampleChannel;
     Channel<HeartRateSample> heartRateSampleChannel;
 
+    String accelerometerChannelName = "";
+    String heartRateChannelName = "";
+
     GalaxyWatchDDBGuard galaxyWatchDDBGuard = new GalaxyWatchDDBGuard();
 
     public void reflect(Reflector r)
     {
         r.reflect("enableAccelerometer", this.enableAccelerometer);
         r.reflect("enableHeartRate", this.enableHeartRate);
+        r.reflect("accelerometerChannel", this.accelerometerChannelName);
+        r.reflect("heartRateChannel", this.heartRateChannelName);
     }
 
     public void initialize()
     {
-        this.accelerometerSampleChannel = this.publish(AccelerometerSample.class, "AccelerometerData");
-        this.heartRateSampleChannel = this.publish(HeartRateSample.class, "HeartRateData");
+        this.accelerometerSampleChannel = this.publish(AccelerometerSample.class, this.accelerometerChannelName);
+        this.heartRateSampleChannel = this.publish(HeartRateSample.class, this.heartRateChannelName);
         Context context = (Context) CLAID.getContext();
 
         galaxyWatchDDBGuard.initialize(context,
