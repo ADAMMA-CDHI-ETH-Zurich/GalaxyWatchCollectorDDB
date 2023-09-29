@@ -38,14 +38,15 @@ import com.example.galaxywatchddbguard.GalaxyWatchHeartRateSample;
 import java.util.ArrayList;
 import java.util.List;
 
-import AndroidPermissions.GenericPermission;
-import AndroidPermissions.LocationPermission;
+
 import JavaCLAID.CLAID;
 import JavaCLAID.Channel;
+import JavaCLAID.ChannelData;
 import JavaCLAID.Module;
 import JavaCLAID.Reflector;
 import JavaCLAIDDataTypes.AccelerometerSample;
 import JavaCLAIDDataTypes.AccelerometerSampleList;
+import JavaCLAIDDataTypes.BatteryData;
 import JavaCLAIDDataTypes.HeartRateSample;
 
 public class GalaxyWatchCollector extends Module {
@@ -59,6 +60,7 @@ public class GalaxyWatchCollector extends Module {
 
     Channel<AccelerometerSample> accelerometerSampleChannel;
     Channel<HeartRateSample> heartRateSampleChannel;
+    Channel<BatteryData> batteryInfoChannel;
 
     private String accelerometerChannel = "";
     private String heartRateChannel = "";
@@ -85,7 +87,11 @@ public class GalaxyWatchCollector extends Module {
                 acclerometerData -> onAccelerometerData(acclerometerData),
                 heartRateData -> onHeartRateData(heartRateData)
                 );
+
+        this.batteryInfoChannel = this.subscribe(BatteryData.class, "BatteryDataMonitored", data -> onBatteryStateChanged(data));
+
     }
+
 
     public void onAccelerometerData(GalaxyWatchAccelerometerSample data)
     {
@@ -101,6 +107,35 @@ public class GalaxyWatchCollector extends Module {
         sample.set_hrIbi(data.hrIbi);
         sample.set_status(data.status);
         this.heartRateSampleChannel.postWithTimestamp(sample, data.timestamp);
+    }
+
+    public void onBatteryStateChanged(ChannelData<BatteryData> data)
+    {
+        BatteryData batteryData = data.value();
+
+        /*
+        UNKNOWN = 0
+        UNPLUGGED = 1
+        FULL = 2
+        CHARGING = 3
+        USB_CHARGING = 4
+        AC_CHARGING = 5
+        WIRELESS_CHARGING = 6,
+         */
+        if (batteryData.get_state() >= 3)
+        {
+            System.out.println("We are charging!");
+            // We are currently charging.
+            galaxyWatchDDBGuard.setIsCharging(CLAID.getContext(), true);
+        }
+        else
+        {
+            System.out.println("We are not!");
+
+            // We are currently not charging.
+            galaxyWatchDDBGuard.setIsCharging(CLAID.getContext(), false);
+        }
+
     }
 
 
