@@ -1,2 +1,8 @@
-# GalaxyWatchCollector
-Collector using the Samsung Priviledged SDK to record data on a Galaxy Watch. Requires to run CLAID on the watch itself.
+# Closing the Loop on AI & Data Collection
+
+<p align="center">
+  <img alt="Light" src="assets/eth_logo.png" width="45%">
+&nbsp; &nbsp; &nbsp; &nbsp;
+  <img alt="Dark" src="assets/cdhi_logo.png" width="45%">
+</p>
+
